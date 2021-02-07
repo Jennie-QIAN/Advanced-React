@@ -6,6 +6,7 @@ const databaseURL = process.env.DATABASE_URL || 'mongodb://localhost/keystone-si
 import { User } from './schemas/User';
 import { Product } from './schemas/Product';
 import { ProductImage } from './schemas/ProductImage';
+import { insertSeedData } from './seed-data';
 
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 360, //how long they stay signed in?
@@ -32,7 +33,11 @@ export default withAuth(config({
   db: {
     adapter: 'mongoose',
     url: databaseURL,
-    //TODO: add data seeding here
+    async onConnect(keystone) {
+      if(process.argv.includes('--seed-data')) {
+        await insertSeedData(keystone);
+      }     
+    },
   },
   lists: createSchema({
     User,
@@ -48,7 +53,7 @@ export default withAuth(config({
     },
   },
   session: withItemData(statelessSessions(sessionConfig), {
-    //GraphQL query
+    //GraphQL query. can be User: `id email`
     User: `id`
   })
 }));
