@@ -21,6 +21,7 @@ function createClient({ headers, initialState }) {
           );
       }),
       // this uses apollo-link-http under the hood, so all the options here come from that package
+      //apollo-upload-client is another package based on the apollo-link-http
       createUploadLink({
         uri: process.env.NODE_ENV === 'development' ? endpoint : prodEndpoint,
         fetchOptions: {
@@ -39,8 +40,11 @@ function createClient({ headers, initialState }) {
           },
         },
       },
-    }).restore(initialState || {}),
+    }).restore(initialState || {}), //all the data collected on the server to give to the hydration on client
   });
 }
 
 export default withApollo(createClient, { getDataFromTree });
+//pakage withApollo to crawl all pages in components and look for any query we have
+//make sure we have all the data ; and we will wait for the data to be fetched before the server sends
+//the html to the client

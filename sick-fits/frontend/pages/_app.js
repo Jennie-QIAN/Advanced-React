@@ -19,13 +19,15 @@ function MyApp({ Component, pageProps, apollo }) {
   );
 }
 
+//getInitialProps is a specific Next.js thing
 MyApp.getInitialProps = async function({ Component, ctx }) {
   let pageProps = {};
   if(Component.getInitialProps) {
     pageProps = await Component.getInitialProps(ctx);
   }
-  pageProps.query = ctx.query;
+  pageProps.query = ctx.query; //that will allow to get all the queries on specific pages
   return { pageProps };
 }
 
-export default withData(MyApp);
+export default withData(MyApp); 
+//MyApp wrapped in withData. withData is imported. give me MyApp and give me WITH DATA
